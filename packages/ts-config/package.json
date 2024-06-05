@@ -1,0 +1,12 @@
+{
+    "version": "1.0.0",
+    "name": "@nuvei/tsconfig",
+    "private": true,
+    "main": "tsconfig.json",
+    "scripts": {
+        "build": "echo \"Error: no build specified\"",
+        "test": "echo \"Error: no test specified\"",
+        "test:coverage": "echo \"Error: no test specified\"",
+        "lint": "echo \"Error: no lint specified\""
+    }
+}

@@ -1,0 +1,22 @@
+[
+    {
+        "key": "commercetools-nuvei-payment-type",
+        "name": {
+            "en": "Commercetools Nuvei payment custom type"
+        },
+        "resourceTypeIds": ["payment"],
+        "fieldDefinitions": [
+            {
+                "type": {
+                    "name": "String"
+                },
+                "name": "sessionToken",
+                "label": {
+                    "en": "Nuvei session token"
+                },
+                "required": false,
+                "inputHint": "SingleLine"
+            }
+        ]
+    }
+]

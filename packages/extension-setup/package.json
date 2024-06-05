@@ -1,0 +1,44 @@
+{
+    "name": "@nuvei/extension-setup",
+    "engines": {
+        "node": ">=18"
+    },
+    "private": true,
+    "type": "module",
+    "version": "1.0.0",
+    "description": "",
+    "main": "build/index.js",
+    "scripts": {
+        "start": "node build/index.js",
+        "test": "echo \"Error: no test specified\"",
+        "test:watch": "yarn build && vitest --typecheck --config ./vitest.config.ts",
+        "test:coverage": "echo \"Error: no test specified\"",
+        "clean": "rm -rf ./build",
+        "build": "yarn clean && tsc --build tsconfig.build.json",
+        "serve": "node dist/index.js",
+        "format": "prettier --write .",
+        "lint": "xo"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ComposableHub/nuvei-commercetools.git"
+    },
+    "author": "Vasil Stoyanov",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ComposableHub/nuvei-commercetools/issues"
+    },
+    "homepage": "https://github.com/ComposableHub/nuvei-commercetools#readme",
+    "devDependencies": {
+        "@nuvei/tsconfig": "^1.0.0",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.3.3",
+        "nodemon": "^3.0.2",
+        "dotenv": "^16.4.5",
+        "@types/node-fetch": "^2.6.10"
+    },
+    "dependencies": {
+        "@nuvei/commercetools-client": "^1.0.0",
+        "node-fetch": "^2.7.0"
+    }
+}

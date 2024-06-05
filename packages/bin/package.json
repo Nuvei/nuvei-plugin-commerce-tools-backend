@@ -1,0 +1,24 @@
+{
+    "name": "@nuvei/bin",
+    "private": true,
+    "type": "module",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "lint": "xo",
+        "build": "echo 'Build not applicable for this package'",
+        "test": "echo 'Tests not applicable for this package'",
+        "test:coverage": "echo 'Tests not applicable for this package'"
+    },
+    "devDependencies": {
+        "fast-glob": "^3.3.2",
+        "istanbul-lib-coverage": "^3.2.2",
+        "istanbul-lib-report": "^3.0.1",
+        "istanbul-reports": "^3.1.7",
+        "xml2js": "^0.6.2"
+    },
+    "dependencies": {
+        "unixify": "^1.0.0",
+        "xml2js": "^0.6.2"
+    }
+}

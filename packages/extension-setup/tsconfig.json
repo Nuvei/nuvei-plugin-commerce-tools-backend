@@ -1,0 +1,14 @@
+{
+    "extends": "@nuvei/tsconfig",
+    "include": ["./", "./src/resources/*.json"],
+    "exclude": ["build", "node_modules", "coverage", "docs", "logs"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "~/*": ["src/*"],
+            "@nuvei/tsconfig": ["../../node_modules/@nuvei/tsconfig/tsconfig.json"],
+            "@nuvei/commercetools-client": ["../../node_modules/@nuvei/commercetools-client/src/index.ts"]
+        }
+    },
+    "typeRoots": ["./typings", "./node_modules/@types/"]
+}

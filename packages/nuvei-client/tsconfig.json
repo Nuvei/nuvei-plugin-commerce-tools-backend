@@ -1,0 +1,11 @@
+{
+    "extends": "@nuvei/tsconfig",
+    "include": ["./"],
+    "exclude": ["build", "node_modules", "coverage", "docs", "logs"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "~/*": ["src/*"]
+        }
+    }
+}

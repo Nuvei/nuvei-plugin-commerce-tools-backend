@@ -1,0 +1,28 @@
+{
+    "recommendations": [
+        "samverschueren.linter-xo",
+        "esbenp.prettier-vscode",
+        "editorconfig.editorconfig",
+        "adpyke.codesnap",
+        "aaron-bond.better-comments",
+        "streetsidesoftware.code-spell-checker",
+        "dbaeumer.vscode-eslint",
+        "kisstkondoros.vscode-codemetrics",
+        "eamodio.gitlens",
+        "shd101wyy.markdown-preview-enhanced",
+        "jgclark.vscode-todo-highlight",
+        "vscode-icons-team.vscode-icons",
+        "sonarsource.sonarlint-vscode",
+        "ryanluker.vscode-coverage-gutters",
+        "ms-azuretools.vscode-docker",
+        "graphql.vscode-graphql-syntax",
+        "graphql.vscode-graphql",
+        "ms-vscode-remote.remote-containers",
+        "mikestead.dotenv",
+        "ms-vsliveshare.vsliveshare",
+        "yoavbls.pretty-ts-errors",
+        "rioj7.command-variable",
+        "github.copilot",
+        "github.copilot-labs"
+    ]
+}

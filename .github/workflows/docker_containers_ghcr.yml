@@ -1,0 +1,46 @@
+name: Publish Docker Images to GHCR
+on:
+    workflow_dispatch:
+
+concurrency:
+    group: ghcr-publish
+    cancel-in-progress: true
+
+env:
+    IMAGE_REPO: ghcr.io/ComposableHub/nuvei-commercetools
+jobs:
+    push_to_registry:
+        permissions: write-all
+        name: Push Docker Image ${{ matrix.package_name }} to GHCR
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                package_name: ['extension-api', 'dmn-api']
+        steps:
+            - name: Check out the repo
+              uses: actions/checkout@v4
+
+            - name: Log in to GitHub Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Extract metadata (tags, labels) for Docker
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.IMAGE_REPO }}/${{ matrix.package_name }}
+                  tags: |
+                    type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short
+            - name: Build and push
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  file: Dockerfile
+                  push: true
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}
+                  build-args: |
+                          package_name=${{ matrix.package_name }}

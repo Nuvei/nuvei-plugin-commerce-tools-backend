@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "exclude": ["build", "node_modules", "coverage", "docs", "logs", "test", "vitest.config.ts"],
+    "compilerOptions": {
+        "tsBuildInfoFile": "build/.tsbuildinfo",
+        "outDir": "./build",
+        "rootDir": "./src"
+    }
+}

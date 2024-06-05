@@ -1,0 +1,62 @@
+version: '3.8'
+name: nuvei_backend_services
+
+x-default-volumes:
+    volumes: &default-volumes
+        - shared-logs:/usr/src/app/logs:rw
+
+x-restart-policy: &restart-policy
+    restart: on-failure:10
+    deploy:
+        restart_policy:
+            condition: on-failure
+            delay: 1s
+            max_attempts: 10
+            window: 30s
+
+x-environment-commercetools: &env-commercetools
+    CTP_PROJECT_KEY: ${CTP_PROJECT_KEY}
+    CTP_CLIENT_ID: ${CTP_CLIENT_ID}
+    CTP_CLIENT_SECRET: ${CTP_CLIENT_SECRET}
+    CTP_API_URL: 'https://api.europe-west1.gcp.commercetools.com'
+    CTP_AUTH_URL: 'https://auth.europe-west1.gcp.commercetools.com'
+
+x-environment-basicauth: &env-basicauth
+    CT_EXTENSION_AUTH_USER: ${CT_EXTENSION_AUTH_USER}
+    CT_EXTENSION_AUTH_PASS: ${CT_EXTENSION_AUTH_PASS}
+
+x-environment-nuvei: &env-nuvei
+    NUVEI_MERCHANT_ID: ${NUVEI_MERCHANT_ID}
+    NUVEI_MERCHANT_SITE_ID: ${NUVEI_MERCHANT_SITE_ID}
+    NUVEI_SECRET_KEY: ${NUVEI_SECRET_KEY}
+    NUVEI_API_BASE_URL: ${NUVEI_API_BASE_URL}
+    NUVEI_ENV: ${NUVEI_ENV}
+
+services:
+      nuvei.extension-api:
+        container_name:  nuvei.extension-api
+        <<: *restart-policy
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+            args:
+                package_name: 'extension-api'
+        volumes: *default-volumes
+        environment:
+            <<: [*env-commercetools, *env-basicauth, *env-nuvei]
+            EXTENSION_API_PORT: ${EXTENSION_API_PORT}
+      nuvei.dmn-api:
+        container_name:  nuvei.dmn-api
+        <<: *restart-policy
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+            args:
+                package_name: 'dmn-api'
+        volumes: *default-volumes
+        environment:
+            <<: [*env-commercetools, *env-basicauth, *env-nuvei]
+            DMN_API_PORT: ${EXTENSION_API_PORT}
+volumes:
+    shared-logs:
+        name: nuvei-backend-logs

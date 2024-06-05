@@ -1,0 +1,22 @@
+[
+    {
+        "key": "commercetools-nuvei-payment-extension",
+        "destination": {
+            "type": "HTTP",
+            "url": "https://a1b2-62-73-100-1.ngrok-free.app/ct-nuvei/open-order",
+            "authentication": {
+                "type": "AuthorizationHeader",
+                "headerValue": "Basic Y3BhcmFuZGlldkBnbWFpbC5jb206aC1GaUgjTGZjXzVBamE3"
+            }
+        },
+        "triggers": [
+            {
+                "resourceTypeId": "payment",
+                "actions": [
+                    "Create"
+                ],
+                "condition": "paymentMethodInfo is defined AND paymentMethodInfo(paymentInterface is defined) AND paymentMethodInfo(paymentInterface=\"nuvei\")"
+            }
+        ]
+    }
+]

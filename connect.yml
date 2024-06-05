@@ -1,0 +1,104 @@
+deployAs:
+  - name: extension-api
+    applicationType: service
+    endpoint: /
+    scripts:
+      postDeploy: yarn install && yarn setup-resources
+    configuration:
+       standardConfiguration:
+        - key: CTP_PROJECT_KEY
+          description: Commercetools Project Key
+          required: true
+          default: 'default-key'
+        - key: CTP_API_URL
+          description: Commercetools API URL
+          required: true
+          default: 'https://api.europe-west1.gcp.commercetools.com'
+        - key: CTP_AUTH_URL
+          description: Commercetools Auth URL
+          required: true
+          default: 'https://auth.europe-west1.gcp.commercetools.com'
+        - key: EXTENSION_API_PORT
+          description: Port to run the extension on
+          required: true
+          default: 80
+       securedConfiguration:
+        - key: CTP_CLIENT_ID
+          description: Commercetools Client ID
+          required: true
+        - key: CTP_CLIENT_SECRET
+          description: Commercetools Client Secret
+          required: true
+        - key: CT_EXTENSION_AUTH_USER
+          description: Extension Auth User
+          required: true
+        - key: CT_EXTENSION_AUTH_PASSWORD
+          description: Extension Auth Password
+          required: true
+        - key: NUVEI_MERCHANT_ID
+          description: Nuvei Merchant ID
+          required: true
+        - key: NUVEI_MERCHANT_SITE_ID
+          description: Nuvei Merchant Site ID
+          required: true
+        - key: NUVEI_SECRET_KEY
+          description: Nuvei Secret Key
+          required: true
+        - key: NUVEI_API_BASE_URL
+          description: Nuvei API Base URL
+          required: true
+        - key: NUVEI_ENV
+          description: Nuvei Environment
+          required: true
+  - name: dmn-api
+    applicationType: service
+    endpoint: /
+    scripts:
+      postDeploy: yarn install && yarn setup-resources
+    configuration:
+       standardConfiguration:
+        - key: CTP_PROJECT_KEY
+          description: Commercetools Project Key
+          required: true
+          default: 'default-key'
+        - key: CTP_API_URL
+          description: Commercetools API URL
+          required: true
+          default: 'https://api.europe-west1.gcp.commercetools.com'
+        - key: CTP_AUTH_URL
+          description: Commercetools Auth URL
+          required: true
+          default: 'https://auth.europe-west1.gcp.commercetools.com'
+        - key: DMN_API_PORT
+          description: Port to run the extension on
+          required: true
+          default: 80
+       securedConfiguration:
+        - key: CTP_CLIENT_ID
+          description: Commercetools Client ID
+          required: true
+        - key: CTP_CLIENT_SECRET
+          description: Commercetools Client Secret
+          required: true
+        - key: CT_EXTENSION_AUTH_USER
+          description: Extension Auth User
+          required: true
+        - key: CT_EXTENSION_AUTH_PASSWORD
+          description: Extension Auth Password
+          required: true
+        - key: NUVEI_MERCHANT_ID
+          description: Nuvei Merchant ID
+          required: true
+        - key: NUVEI_MERCHANT_SITE_ID
+          description: Nuvei Merchant Site ID
+          required: true
+        - key: NUVEI_SECRET_KEY
+          description: Nuvei Secret Key
+          required: true
+        - key: NUVEI_API_BASE_URL
+          description: Nuvei API Base URL
+          required: true
+        - key: NUVEI_ENV
+          description: Nuvei Environment
+          required: true
+

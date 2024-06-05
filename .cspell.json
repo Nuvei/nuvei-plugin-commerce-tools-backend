@@ -1,0 +1,28 @@
+{
+    "version": "0.2",
+    "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/master/cspell.schema.json",
+    "language": "en",
+    "words": [
+        "commercetools",
+        "NUVEI",
+        "safecharge",
+        "sarif",
+        "unixify",
+        "unplugin"
+    ],
+    "flagWords": [],
+    "ignorePaths": [
+        "package.json",
+        "package-lock.json",
+        "yarn.lock",
+        "tsconfig.json",
+        "node_modules/**"
+    ],
+    "enableFiletypes": [
+        "copilotignore",
+        "dockerfile",
+        "dotenv",
+        "editorconfig",
+        "log"
+    ]
+}

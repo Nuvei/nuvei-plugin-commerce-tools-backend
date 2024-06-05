@@ -1,0 +1,13 @@
+{
+    "extends": "@nuvei/tsconfig",
+    "include": ["./", "./src/resources/*.json"],
+    "exclude": ["build", "node_modules", "coverage", "docs", "logs"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "~/*": ["src/*"],
+            "@nuvei/tsconfig": ["node_modules/@nuvei/tsconfig/tsconfig.json"],
+        }
+    },
+    "typeRoots": ["./typings", "./node_modules/@types/"]
+}

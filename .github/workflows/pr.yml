@@ -1,0 +1,109 @@
+name: Build
+on:
+    push:
+        branches:
+            - develop
+    pull_request:
+        types: [opened, synchronize, reopened]
+
+concurrency:
+    group: build-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+  actions: read
+  checks: write
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+    build_test:
+        name: Build and Test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: './.nvmrc'
+
+            - name: Retrieve Cache ${{ matrix.site }}
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      node_modules/.cache
+                  key: ${{ runner.os }}-build-${{ hashFiles('**/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-build-${{ hashFiles('**/yarn.lock') }}
+
+            - name: Set Up Node Version
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'yarn'
+                  cache-dependency-path: yarn.lock
+
+            - name: Install yarn
+              run: npm i -g yarn
+
+            - name: Install dependencies
+              run: yarn install --prefer-offline --frozen-lockfile
+
+            - name: Lint
+              run: yarn lint:all
+
+            - name: Build
+              run: yarn build:all
+
+            - name: Test
+              run: yarn test:coverage:all
+
+            - name: SonarCloud Scan
+              uses: SonarSource/sonarcloud-github-action@master
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    security_scan:
+        name: Security Scan
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+            ## for plain text report in the action
+            - name: Bearer
+              uses: bearer/bearer-action@v2
+              with:
+                skip-rule: 'javascript_lang_logger_leak'
+              if: always()
+            ## for rdjson report in the action
+            - name: Bearer
+              uses: bearer/bearer-action@v2
+              if: always()
+              with:
+                 format: rdjson
+                 output: rd.json
+                 scanner: sast,secrets
+                 skip-rule: 'javascript_lang_logger_leak'
+                 #diff: true
+                 #exit-code: 0
+            - name: Setup reviewdog
+              uses: reviewdog/action-setup@v1
+              if: always()
+            - name: Run Reviewdog PR Check
+              if: always()
+              env:
+                REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                cat rd.json | reviewdog -f=rdjson -reporter=github-pr-check
+            - name: Run Reviewdog PR Review
+              if: always()
+              env:
+                REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                cat rd.json | reviewdog -f=rdjson -reporter=github-pr-review
+

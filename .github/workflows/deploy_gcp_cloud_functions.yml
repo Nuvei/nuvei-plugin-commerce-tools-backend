@@ -1,0 +1,108 @@
+name: Deploy GCP Cloud Functions
+on:
+    workflow_dispatch:
+
+concurrency:
+    group: deploy-gcp-cloud-functions
+    cancel-in-progress: true
+
+jobs:
+  GCP_Cloud_Functions_Deploy:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: './.nvmrc'
+
+    - name: Retrieve Cache ${{ matrix.site }}
+      uses: actions/cache@v4
+      with:
+        path: |
+            node_modules/.cache
+        key: ${{ runner.os }}-build-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+            ${{ runner.os }}-build-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Set Up Node Version
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'yarn'
+        cache-dependency-path: yarn.lock
+
+    - name: Install yarn
+      run: npm i -g yarn
+
+    - name: Install dependencies
+      run: yarn install --prefer-offline --frozen-lockfile
+
+    - name: Lint
+      run: yarn workspaces run lint
+
+    - name: Build Workspaces
+      run: |
+        yarn workspaces run build
+
+    - name: Create YAML file from env vars
+      run: |
+        echo "CTP_PROJECT_KEY: '${{ vars.CTP_PROJECT_KEY }}'" > .gcp.env.yaml
+        echo "CTP_CLIENT_ID: '${{ vars.CTP_CLIENT_ID }}'" >> .gcp.env.yaml
+        echo "CTP_CLIENT_SECRET: '${{ secrets.CTP_CLIENT_SECRET }}'" >> .gcp.env.yaml
+        echo "CTP_API_URL: '${{ vars.CTP_API_URL }}'" >> .gcp.env.yaml
+        echo "CTP_AUTH_URL: '${{ vars.CTP_AUTH_URL }}'" >> .gcp.env.yaml
+        echo "EXTENSION_API_PORT: '${{ vars.EXTENSION_API_PORT }}'" >> .gcp.env.yaml
+        echo "DMN_API_PORT: '${{ vars.DMN_API_PORT }}'" >> .gcp.env.yaml
+        echo "NUVEI_MERCHANT_ID: '${{ vars.NUVEI_MERCHANT_ID }}'" >> .gcp.env.yaml
+        echo "NUVEI_MERCHANT_SITE_ID: '${{ vars.NUVEI_MERCHANT_SITE_ID }}'" >> .gcp.env.yaml
+        echo "NUVEI_SECRET_KEY: '${{ secrets.NUVEI_SECRET_KEY }}'" >> .gcp.env.yaml
+        echo "NUVEI_API_BASE_URL: '${{ vars.NUVEI_API_BASE_URL }}'" >> .gcp.env.yaml
+        echo "NUVEI_ENV: '${{ vars.NUVEI_ENV }}'" >> .gcp.env.yaml
+        echo "CT_EXTENSION_AUTH_USER: '${{ vars.CT_EXTENSION_AUTH_USER }}'" >> .gcp.env.yaml
+        echo "CT_EXTENSION_AUTH_PASSWORD: '${{ secrets.CT_EXTENSION_AUTH_PASS }}'" >> .gcp.env.yaml
+
+    - name: Prepare Deployment Dist Extension API
+      run: |
+        ./bin/gcp_cloud_functions_build.sh extension-api true
+
+    - id: 'auth'
+      name: 'Authenticate with Google Cloud'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCP_SERVICE_ACCOUNT_CREDENTIALS_JSON }}'
+
+    - id: 'deploy_gcp_function_extension_api'
+      name: 'Deploy Cloud Function - Extension API'
+      uses: 'google-github-actions/deploy-cloud-functions@v2'
+      with:
+        name: 'extension-api'
+        runtime: 'nodejs20'
+        source_dir: 'gcp_deploy_build'
+        entry_point: 'extensionApi'
+        ingress_settings: 'ALLOW_ALL'
+        env_vars_file: '.gcp.env.yaml'
+        region: 'europe-west1' # Optional, default is 'us-central1'
+    - name: Prepare Deployment Dist DMN API
+      run: |
+        ./bin/gcp_cloud_functions_build.sh dmn-api true
+
+    - id: 'deploy_gcp_function_dmn'
+      name: 'Deploy Cloud Function - DMN'
+      uses: 'google-github-actions/deploy-cloud-functions@v2'
+      with:
+        name: 'dmn-api'
+        runtime: 'nodejs20'
+        entry_point: 'dmnApi'
+        source_dir: 'gcp_deploy_build'
+        ingress_settings: 'ALLOW_ALL'
+        env_vars_file: '.gcp.env.yaml'
+        region: 'europe-west1' # Optional, default is 'us-central1'
